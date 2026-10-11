@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    name: build-and-test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check project files
+        run: |
+          test -f index.html
+          test -f style.css
+          test -f script.js
+          echo "All project files exist!"
+
+      - name: Build website
+        run: |
+          mkdir -p dist
+          cp index.html style.css script.js dist/
+          echo "Website build successful!"
+
+      - name: Test website
+        run: |
+          grep -q 'style.css' index.html
+          grep -q 'script.js' index.html
+          grep -q '<footer>' index.html
+          echo "All tests passed!"
